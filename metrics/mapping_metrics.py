@@ -2,6 +2,7 @@
 
 import rospy
 from nav_msgs.msg import OccupancyGrid
+import argparse
 
 
 def area_from_pgm(map_name: str):
@@ -41,15 +42,15 @@ def area_from_pgm(map_name: str):
 
 
 class Coverage:
-    def __init__(self):
+    def __init__(self, area: float):
         rospy.init_node('coverage_metric_node', anonymous=True)
         self.map_sub = rospy.Subscriber('/map', OccupancyGrid, callback=self.coverage_callback, queue_size=1)
-        self.TOTAL_AREA: float = 92.1
         self.OBSTACLE_THR: int = 65
         self.FREE_THR: int = 25
+        self.area: float = area
         self.covered_area: int = 0
         self.coverage_rate: float = 0
-        rospy.loginfo("Coverage metric is running ...")
+        rospy.loginfo(f"Total area is {self.area} m2, coverage metric starts running ...")
         rospy.spin()
 
     def coverage_callback(self, msg: OccupancyGrid):
@@ -57,19 +58,24 @@ class Coverage:
         res = msg.info.resolution
         cell_counts = sum([1 for i in map_data if 0 <= i < self.FREE_THR])
         self.covered_area = res * res * cell_counts
-        self.coverage_rate = self.covered_area / self.TOTAL_AREA
+        self.coverage_rate = self.covered_area / self.area
         rospy.loginfo_throttle(1, f'Your current coverage rate is %.1f%%', self.coverage_rate * 100)
 
 
 if __name__ == '__main__':
     # Example code to get the area statically from .pgm and .yaml files
     # map_name = 'map'
+    # # map_name = 'map_unseen'
     # area = area_from_pgm(map_name)
     # print(f'Map area is {area} m2.')
 
     # Code to give out real-time coverage rate while you map the environment
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--area", help="Area of the house in m2 for calculating coverage rate", type=float)
+    args, _ = parser.parse_known_args()
+
     try:
-        coverage_node = Coverage()
+        coverage_node = Coverage(args.area)
     except rospy.ROSInterruptException:
         pass
     finally:
