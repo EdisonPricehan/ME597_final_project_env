@@ -29,7 +29,7 @@ class NavigationMetrics:
         # navigation time related variables
         self.navigation_start_time = None
         self.navigation_duration = 0
-        self.NAVIGATION_TIMEOUT_SEC = 60
+        self.NAVIGATION_TIMEOUT_SEC = 120
 
         # report as a dictionary of all navigation metrics
         self.report = {'start_poses': [], 'goal_poses': [], 'time_costs': [], 'collision_counts': []}
