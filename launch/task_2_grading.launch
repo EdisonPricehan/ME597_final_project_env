@@ -10,6 +10,8 @@
   <arg name="map_file" default="$(find final_project)/maps/map.yaml" />
   
   <arg name="open_rviz" default="true"/>
+
+  <arg name="test_bonus" default="false"/>
   
   <!-- Launch robot and world -->
   <include file="$(find final_project)/launch/ME597_final_project.launch">
@@ -39,7 +41,8 @@
   </node>
 
   <!-- your solution node -->
-  <node pkg="final_project" name="navigation" type="task_2.py" output="screen"/>
+  <node pkg="final_project" name="navigation" type="task_2.py" output="screen" unless="$(arg test_bonus)"/>
+  <node pkg="final_project" name="navigation_bonus" type="task_2_bonus.py" output="screen" if="$(arg test_bonus)"/>
 
   <node pkg="final_project" name="navigation_grader" type="navigation_metrics.py" output="screen"/>
 
