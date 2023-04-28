@@ -78,7 +78,7 @@ def position_node():
 
 if __name__ == '__main__':
     try:
-        time.sleep(2)
+        time.sleep(5)
         position_node()
     except rospy.ROSInterruptException:
         pass
