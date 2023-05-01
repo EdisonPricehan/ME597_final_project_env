@@ -79,5 +79,8 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:
         pass
     finally:
-        rospy.loginfo(f'Your final coverage rate is %.1f%%', coverage_node.coverage_rate * 100)
+        coverage_rate = coverage_node.coverage_rate
+        rospy.loginfo(f'Your final coverage rate is %.1f%%', coverage_rate * 100)
+        final_score = 36 if coverage_rate >= 0.85 else coverage_rate / 0.85 * 36
+        rospy.loginfo("Your final score for task 1 is %d", final_score)
 
