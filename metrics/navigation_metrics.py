@@ -144,6 +144,10 @@ class NavigationMetrics:
         cur_goal_failed = False
 
         # update robot pose
+        if self.robot_name not in msg.name:
+            rospy.logwarn_throttle(0.5, f"Waiting for robot model to be spawned ...")
+            return
+
         robot_id = msg.name.index(self.robot_name)
         self.robot_pose = msg.pose[robot_id]
 
